@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Игра в города</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 8px 12px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+
+    #message {
+      font-size: 16px;
+      margin-bottom: 16px;
+      padding: 10px;
+      background: #f2f2f2;
+      border-left: 3px solid gray;
+    }
+
+    #message.error {
+      background: #fff0f0;
+      border-left-color: #cc0000;
+      color: #cc0000;
+    }
+
+    #history {
+      font-size: 14px;
+      color: #555;
+    }
+
+    #history span {
+      display: inline-block;
+      margin: 3px 4px 3px 0;
+      padding: 3px 8px;
+      background: #e8e8e8;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<input id="field" placeholder="Введите город и нажмите Enter">
+<div id="message"></div>
+<div id="history"></div>
+
+<script>
+  const field   = document.querySelector('#field');
+  const message = document.querySelector('#message');
+  const history = document.querySelector('#history');
+
+  const used    = [];
+  let player    = 1;
+  let lastLetter = '';
+
+  function getLastLetter(city) {
+    const lower = city.toLowerCase();
+    const last  = lower[lower.length - 1];
+    if (last === 'ь' || last === 'ъ') {
+      return lower[lower.length - 2];
+    }
+    return last;
+  }
+
+  function showMessage(text, isError = false) {
+    message.textContent = text;
+    message.className   = isError ? 'error' : '';
+  }
+
+  function addToHistory(city, playerNum) {
+    const span = document.createElement('span');
+    span.textContent = `${playerNum}: ${city}`;
+    history.appendChild(span);
+  }
+
+  // Начальное сообщение
+  showMessage('Игрок 1, называйте любой город.');
+
+  field.addEventListener('keydown', function(event) {
+    if (event.key !== 'Enter') return;
+
+    const city = field.value.trim();
+    field.value = '';
+
+    // Проверка: город не пустой
+    if (!city) {
+      showMessage('Введите название города!', true);
+      return;
+    }
+
+    // Проверка: первая буква совпадает с последней буквой предыдущего города
+    if (lastLetter && city[0].toLowerCase() !== lastLetter) {
+      showMessage(
+        `Ошибка! Город должен начинаться на букву «${lastLetter.toUpperCase()}». Игрок ${player}, попробуйте снова.`,
+        true
+      );
+      return;
+    }
+
+    // Проверка: город не повторяется
+    if (used.includes(city.toLowerCase())) {
+      showMessage(
+        `Город «${city}» уже был! Игрок ${player}, назовите другой город.`,
+        true
+      );
+      return;
+    }
+
+    // Всё верно — принимаем город
+    used.push(city.toLowerCase());
+    addToHistory(city, player);
+
+    lastLetter = getLastLetter(city);
+    player     = player === 1 ? 2 : 1;
+
+    showMessage(
+      `Принято! Игрок ${player}, называйте город на букву «${lastLetter.toUpperCase()}».`
+    );
+  });
+</script>
+
+</body>
+</html>

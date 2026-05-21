@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Города против робота</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    input {
+      font-size: 18px;
+      padding: 8px 12px;
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+    }
+
+    #message {
+      font-size: 16px;
+      margin-bottom: 16px;
+      padding: 10px;
+      background: #f2f2f2;
+      border-left: 3px solid gray;
+    }
+
+    #message.error {
+      background: #fff0f0;
+      border-left-color: #cc0000;
+      color: #cc0000;
+    }
+
+    #message.robot {
+      background: #f0f5ff;
+      border-left-color: #3366cc;
+    }
+
+    #message.win {
+      background: #f0fff0;
+      border-left-color: #009900;
+      color: #006600;
+    }
+
+    #history span {
+      display: inline-block;
+      margin: 3px 4px 3px 0;
+      padding: 3px 8px;
+      background: #e8e8e8;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    #history span.robot-city {
+      background: #dde8ff;
+    }
+  </style>
+</head>
+<body>
+
+<input id="field" placeholder="Введите город и нажмите Enter">
+<div id="message"></div>
+<div id="history"></div>
+
+<script>
+  const field   = document.querySelector('#field');
+  const message = document.querySelector('#message');
+  const history = document.querySelector('#history');
+
+  // Список городов робота
+  const allCities = [
+    'Москва', 'Астрахань', 'Новгород', 'Дмитров', 'Волгоград',
+    'Дубна', 'Архангельск', 'Калуга', 'Анапа', 'Азов',
+    'Воронеж', 'Жуковский', 'Йошкар-Ола', 'Ярославль',
+    'Липецк', 'Казань', 'Нижний Новгород', 'Омск',
+    'Красноярск', 'Курск', 'Кемерово', 'Орёл', 'Луга',
+    'Астана', 'Алматы', 'Актау', 'Уфа', 'Абакан',
+    'Нальчик', 'Ковров', 'Волжский', 'Якутск', 'Курган'
+  ];
+
+  const used = [];
+  let lastLetter = '';
+  let gameOver = false;
+
+  function getLastLetter(city) {
+    const lower = city.toLowerCase();
+    const last  = lower[lower.length - 1];
+    return (last === 'ь' || last === 'ъ') ? lower[lower.length - 2] : last;
+  }
+
+  function showMessage(text, type = '') {
+    message.textContent = text;
+    message.className   = type;
+  }
+
+  function addToHistory(city, isRobot = false) {
+    const span = document.createElement('span');
+    span.textContent = (isRobot ? '🤖 ' : '👤 ') + city;
+    if (isRobot) span.classList.add('robot-city');
+    history.appendChild(span);
+  }
+
+  function robotMove() {
+    const candidate = allCities.find(city =>
+      city[0].toLowerCase() === lastLetter &&
+      !used.includes(city.toLowerCase())
+    );
+
+    if (!candidate) {
+      showMessage('Робот не может найти подходящий город — вы победили! 🎉', 'win');
+      gameOver = true;
+      field.disabled = true;
+      return;
+    }
+
+    used.push(candidate.toLowerCase());
+    addToHistory(candidate, true);
+    lastLetter = getLastLetter(candidate);
+
+    showMessage(
+      `Робот называет: «${candidate}». Ваш ход — город на букву «${lastLetter.toUpperCase()}».`,
+      'robot'
+    );
+  }
+
+  showMessage('Ваш ход — называйте любой город.');
+
+  field.addEventListener('keydown', function(event) {
+    if (event.key !== 'Enter' || gameOver) return;
+
+    const city = field.value.trim();
+    field.value = '';
+
+    if (!city) {
+      showMessage('Введите название города!', 'error');
+      return;
+    }
+
+    // Проверка: первая буква
+    if (lastLetter && city[0].toLowerCase() !== lastLetter) {
+      showMessage(
+        `Город должен начинаться на букву «${lastLetter.toUpperCase()}». Попробуйте снова.`,
+        'error'
+      );
+      return;
+    }
+
+    // Проверка: город есть в списке робота
+    if (!allCities.some(c => c.toLowerCase() === city.toLowerCase())) {
+      showMessage(`Города «${city}» нет в моём списке. Попробуйте другой.`, 'error');
+      return;
+    }
+
+    // Проверка: город не повторяется
+    if (used.includes(city.toLowerCase())) {
+      showMessage(`Город «${city}» уже был! Назовите другой.`, 'error');
+      return;
+    }
+
+    // Принимаем ход игрока
+    used.push(city.toLowerCase());
+    addToHistory(city, false);
+    lastLetter = getLastLetter(city);
+
+    // Ход робота
+    robotMove();
+  });
+</script>
+
+</body>
+</html>
