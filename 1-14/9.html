@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Гороскоп</title>
+
+	<style>
+		body {
+			font-family: Arial, sans-serif;
+			background: #f5f5f5;
+		}
+
+		#parent {
+			width: 500px;
+			margin: 50px auto;
+			padding: 20px;
+			background: white;
+			border-radius: 10px;
+			box-shadow: 0 0 10px rgba(0,0,0,0.1);
+		}
+
+		input {
+			width: 100%;
+			padding: 10px;
+			margin-bottom: 15px;
+			font-size: 16px;
+		}
+
+		#result {
+			margin-top: 20px;
+			padding: 15px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			min-height: 50px;
+		}
+
+		.radio-group {
+			margin-bottom: 15px;
+		}
+
+		label {
+			margin-right: 15px;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="parent">
+
+		<input type="date" id="birth">
+
+		<div class="radio-group">
+			<label>
+				<input type="radio" name="day" value="today" checked>
+				Сегодня
+			</label>
+
+			<label>
+				<input type="radio" name="day" value="tomorrow">
+				Завтра
+			</label>
+
+			<label>
+				<input type="radio" name="day" value="afterTomorrow">
+				Послезавтра
+			</label>
+		</div>
+
+		<div id="result">
+			Введите дату рождения
+		</div>
+
+	</div>
+
+	<script>
+
+		let horoscopes = {
+
+			today: {
+				aries: 'Сегодня у Овнов удачный день для новых дел.',
+				taurus: 'Тельцам стоит уделить время отдыху.',
+				gemini: 'Близнецов ждут интересные знакомства.',
+				cancer: 'Ракам лучше избегать конфликтов.',
+				leo: 'Львов ждёт успех в работе.',
+				virgo: 'Девам стоит заняться саморазвитием.',
+				libra: 'Весам повезёт в финансах.',
+				scorpio: 'Скорпионов ждут неожиданные новости.',
+				sagittarius: 'Стрельцам нужно быть внимательнее.',
+				capricorn: 'Козероги добьются поставленных целей.',
+				aquarius: 'Водолеям стоит больше отдыхать.',
+				pisces: 'Рыб ждёт приятный сюрприз.'
+			},
+
+			tomorrow: {
+				aries: 'Завтра Овнам улыбнётся удача.',
+				taurus: 'Тельцам стоит заняться важными делами.',
+				gemini: 'Близнецы получат хорошие новости.',
+				cancer: 'Ракам нужно уделить время семье.',
+				leo: 'Львов ждёт продуктивный день.',
+				virgo: 'Дев ждёт интересная встреча.',
+				libra: 'Весам стоит избегать споров.',
+				scorpio: 'Скорпионы почувствуют прилив сил.',
+				sagittarius: 'Стрельцам пора начать новое дело.',
+				capricorn: 'Козероги смогут решить старую проблему.',
+				aquarius: 'Водолеев ждёт вдохновение.',
+				pisces: 'Рыбам стоит довериться интуиции.'
+			},
+
+			afterTomorrow: {
+				aries: 'Послезавтра Овнам лучше отдохнуть.',
+				taurus: 'Тельцов ждут перемены.',
+				gemini: 'Близнецам стоит быть осторожнее.',
+				cancer: 'Раков ждёт приятная встреча.',
+				leo: 'Львам улыбнётся удача.',
+				virgo: 'Девам стоит заняться здоровьем.',
+				libra: 'Весы найдут решение проблемы.',
+				scorpio: 'Скорпионов ждёт насыщенный день.',
+				sagittarius: 'Стрельцы получат полезный опыт.',
+				capricorn: 'Козерогам пора расслабиться.',
+				aquarius: 'Водолеи смогут проявить себя.',
+				pisces: 'Рыб ждут хорошие новости.'
+			}
+		};
+
+
+		let birth = document.querySelector('#birth');
+		let result = document.querySelector('#result');
+		let radios = document.querySelectorAll('input[name="day"]');
+
+
+		function getZodiacSign(date) {
+
+			let month = date.getMonth() + 1;
+			let day = date.getDate();
+
+			if ((month == 3 && day >= 21) || (month == 4 && day <= 19)) return 'aries';
+			if ((month == 4 && day >= 20) || (month == 5 && day <= 20)) return 'taurus';
+			if ((month == 5 && day >= 21) || (month == 6 && day <= 20)) return 'gemini';
+			if ((month == 6 && day >= 21) || (month == 7 && day <= 22)) return 'cancer';
+			if ((month == 7 && day >= 23) || (month == 8 && day <= 22)) return 'leo';
+			if ((month == 8 && day >= 23) || (month == 9 && day <= 22)) return 'virgo';
+			if ((month == 9 && day >= 23) || (month == 10 && day <= 22)) return 'libra';
+			if ((month == 10 && day >= 23) || (month == 11 && day <= 21)) return 'scorpio';
+			if ((month == 11 && day >= 22) || (month == 12 && day <= 21)) return 'sagittarius';
+			if ((month == 12 && day >= 22) || (month == 1 && day <= 19)) return 'capricorn';
+			if ((month == 1 && day >= 20) || (month == 2 && day <= 18)) return 'aquarius';
+
+			return 'pisces';
+		}
+
+
+		function showHoroscope() {
+
+			if (!birth.value) {
+				result.textContent = 'Введите дату рождения';
+				return;
+			}
+
+			let date = new Date(birth.value);
+
+			let sign = getZodiacSign(date);
+
+			let selectedDay = document.querySelector('input[name="day"]:checked').value;
+
+			result.textContent = horoscopes[selectedDay][sign];
+		}
+
+
+		birth.addEventListener('change', showHoroscope);
+
+		for (let radio of radios) {
+			radio.addEventListener('change', showHoroscope);
+		}
+
+	</script>
+
+</body>
+</html>

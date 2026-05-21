@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Автодополнение</title>
+  <style>
+    #parent {
+      position: relative;
+    }
+
+    #elem {
+      padding: 5px;
+      font-size: 18px;
+    }
+
+    #parent ul {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      list-style-type: none;
+      background-color: white;
+    }
+
+    #parent li {
+      border: 1px solid gray;
+      font-size: 18px;
+      padding: 5px;
+    }
+
+    #parent li:hover {
+      border: 1px solid black;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div id="parent">
+  <input id="elem">
+  <ul id="list"></ul>
+</div>
+
+<script>
+  let arr = ['Belarus', 'Belgium', 'Bulgaria'];
+
+  const elem = document.getElementById('elem');
+  const list = document.getElementById('list');
+
+  elem.addEventListener('input', function() {
+    const val = elem.value;
+
+    list.innerHTML = '';
+
+    if (!val) return;
+
+    const matches = arr.filter(country => country.startsWith(val));
+
+    matches.forEach(country => {
+      const li = document.createElement('li');
+      li.textContent = country;
+
+      li.addEventListener('click', function() {
+        elem.value = country;
+        list.innerHTML = '';
+      });
+
+      list.appendChild(li);
+    });
+  });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<input type="text" id="input" placeholder="Нажимайте кнопки клавиатуры..." style="width: 100%; padding: 8px; font-size: 16px; margin-bottom: 16px;" />
+
+<div id="keyboard"></div>
+
+<script>
+  const rows = [
+    ['1','2','3','4','5','6','7','8','9','0'],
+    ['q','w','e','r','t','y','u','i','o','p'],
+    ['a','s','d','f','g','h','j','k','l'],
+    ['CapsLock','z','x','c','v','b','n','m','⌫'],
+    ['Space']
+  ];
+
+  let capsLock = false;
+  const input = document.getElementById('input');
+  const keyboard = document.getElementById('keyboard');
+
+  function renderKeyboard() {
+    keyboard.innerHTML = '';
+
+    rows.forEach(row => {
+      const rowDiv = document.createElement('div');
+      rowDiv.style.cssText = 'display:flex; gap:6px; margin-bottom:6px;';
+
+      row.forEach(key => {
+        const btn = document.createElement('button');
+
+        if (key === 'CapsLock') {
+          btn.textContent = 'Caps Lock';
+          btn.style.cssText = 'padding:10px 14px; font-size:14px; background:' + (capsLock ? '#333' : '') + '; color:' + (capsLock ? '#fff' : '');
+        } else if (key === 'Space') {
+          btn.textContent = 'Пробел';
+          btn.style.cssText = 'padding:10px 60px; font-size:14px;';
+        } else if (key === '⌫') {
+          btn.textContent = '⌫';
+          btn.style.cssText = 'padding:10px 16px; font-size:14px;';
+        } else {
+          btn.textContent = capsLock ? key.toUpperCase() : key;
+          btn.style.cssText = 'padding:10px 14px; font-size:14px; min-width:40px;';
+        }
+
+        btn.addEventListener('click', () => handleKey(key));
+        rowDiv.appendChild(btn);
+      });
+
+      keyboard.appendChild(rowDiv);
+    });
+  }
+
+  function handleKey(key) {
+    if (key === 'CapsLock') {
+      capsLock = !capsLock;
+      renderKeyboard();
+      return;
+    }
+
+    if (key === '⌫') {
+      input.value = input.value.slice(0, -1);
+      return;
+    }
+
+    if (key === 'Space') {
+      input.value += ' ';
+      return;
+    }
+
+    input.value += capsLock ? key.toUpperCase() : key;
+  }
+
+  renderKeyboard();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Календарь</title>
+  <style>
+    ul {
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 0;
+    }
+
+    li {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #ccc;
+    }
+
+    li.today {
+      background: #f0c040;
+      font-weight: bold;
+    }
+
+    a {
+      cursor: pointer;
+      margin: 0 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div>
+  <a id="prevBtn">← Назад</a>
+  <b id="title"></b>
+  <a id="nextBtn">Вперёд →</a>
+</div>
+
+<ul id="calendar"></ul>
+
+<script>
+  const MONTHS = [
+    'Январь','Февраль','Март','Апрель','Май','Июнь',
+    'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'
+  ];
+
+  const now = new Date();
+  let year  = now.getFullYear();
+  let month = now.getMonth();
+
+  function render() {
+    document.getElementById('title').textContent =
+      MONTHS[month] + ' ' + year;
+
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const list = document.getElementById('calendar');
+    list.innerHTML = '';
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const li = document.createElement('li');
+      li.textContent = d;
+
+      const isToday = d === now.getDate()
+        && month === now.getMonth()
+        && year  === now.getFullYear();
+
+      if (isToday) li.classList.add('today');
+
+      list.appendChild(li);
+    }
+  }
+
+  document.getElementById('prevBtn').onclick = function() {
+    month--;
+    if (month < 0) { month = 11; year--; }
+    render();
+  };
+
+  document.getElementById('nextBtn').onclick = function() {
+    month++;
+    if (month > 11) { month = 0; year++; }
+    render();
+  };
+
+  render();
+</script>
+</body>
+</html>

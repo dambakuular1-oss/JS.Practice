@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Сайт предсказаний</title>
+
+	<style>
+		#parent {
+			text-align: center;
+			margin-top: 50px;
+			font-family: Arial, sans-serif;
+		}
+
+		#parent > * {
+			margin-bottom: 15px;
+		}
+
+		#timer {
+			font-size: 40px;
+			font-weight: bold;
+		}
+
+		#text {
+			font-size: 22px;
+			font-style: italic;
+			min-height: 40px;
+		}
+
+		button {
+			padding: 10px 20px;
+			font-size: 16px;
+			cursor: pointer;
+		}
+
+		button:not(.active) {
+			display: none;
+		}
+
+		.good {
+			color: green;
+		}
+
+		.bad {
+			color: red;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="parent">
+
+		<div id="timer">?</div>
+
+		<div id="text"></div>
+
+		<button id="start" class="active">
+			Узнать свою судьбу
+		</button>
+
+		<button id="stop">
+			Получить предсказание
+		</button>
+
+	</div>
+
+	<script>
+
+		let predictions = {
+
+			1: {
+				text: 'Сегодня вас ждёт большая удача!',
+				type: 'good'
+			},
+
+			2: {
+				text: 'Будьте осторожны с финансами.',
+				type: 'bad'
+			},
+
+			3: {
+				text: 'Очень скоро вас ждёт приятная встреча.',
+				type: 'good'
+			},
+
+			4: {
+				text: 'Возможны небольшие трудности.',
+				type: 'bad'
+			},
+
+			5: {
+				text: 'Ваш труд принесёт отличный результат.',
+				type: 'good'
+			},
+
+			6: {
+				text: 'Не доверяйте незнакомым людям.',
+				type: 'bad'
+			},
+
+			7: {
+				text: 'Скоро исполнится ваше желание.',
+				type: 'good'
+			}
+
+		};
+
+
+		let timer = document.querySelector('#timer');
+		let text = document.querySelector('#text');
+
+		let start = document.querySelector('#start');
+		let stop = document.querySelector('#stop');
+
+		let interval;
+		let number;
+
+
+		start.addEventListener('click', function() {
+
+			start.classList.remove('active');
+			stop.classList.add('active');
+
+			interval = setInterval(function() {
+
+				number = random(1, 7);
+
+				timer.textContent = number;
+
+			}, 100);
+
+		});
+
+
+		stop.addEventListener('click', function() {
+
+			clearInterval(interval);
+
+			let prediction = predictions[number];
+
+			text.textContent = prediction.text;
+
+			if (prediction.type === 'good') {
+				text.classList.add('good');
+			} else {
+				text.classList.add('bad');
+			}
+
+			stop.classList.remove('active');
+		});
+
+
+		function random(min, max) {
+			return Math.floor(Math.random() * (max - min + 1)) + min;
+		}
+
+	</script>
+
+</body>
+</html>

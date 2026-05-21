@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<title>Исторические события</title>
+
+	<style>
+		* {
+			box-sizing: border-box;
+		}
+
+		#parent {
+			margin: 50px auto;
+			width: 600px;
+		}
+
+		#input {
+			width: 100%;
+			margin-bottom: 10px;
+			padding: 10px;
+			font-size: 16px;
+		}
+
+		#table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		#table td,
+		#table th {
+			padding: 10px;
+			text-align: center;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="parent">
+		<input id="input" placeholder="Введите год и нажмите Enter">
+		<table id="table"></table>
+	</div>
+
+	<script>
+		let events = {
+			2000: [
+				{
+					date: '01.01.2000',
+					title: 'Новый век',
+					description: 'Наступил 2000 год'
+				},
+				{
+					date: '15.07.2000',
+					title: 'Событие 2000',
+					description: 'Описание события 2000 года'
+				}
+			],
+
+			2001: [
+				{
+					date: '12.04.2001',
+					title: 'Событие 2001',
+					description: 'Описание события 2001 года'
+				}
+			],
+
+			2002: [
+				{
+					date: '20.08.2002',
+					title: 'Событие 2002',
+					description: 'Описание события 2002 года'
+				}
+			]
+		};
+
+		let input = document.querySelector('#input');
+		let table = document.querySelector('#table');
+
+		input.addEventListener('keypress', function(event) {
+
+			if (event.key === 'Enter') {
+
+				let year = input.value;
+
+				table.innerHTML = '';
+
+				if (events[year]) {
+
+					let head = document.createElement('tr');
+
+					head.innerHTML = `
+						<th>Дата</th>
+						<th>Название</th>
+						<th>Описание</th>
+					`;
+
+					table.appendChild(head);
+
+					for (let item of events[year]) {
+
+						let tr = document.createElement('tr');
+
+						tr.innerHTML = `
+							<td>${item.date}</td>
+							<td>${item.title}</td>
+							<td>${item.description}</td>
+						`;
+
+						table.appendChild(tr);
+					}
+
+				} else {
+
+					let tr = document.createElement('tr');
+
+					tr.innerHTML = `
+						<td colspan="3">
+							События не найдены
+						</td>
+					`;
+
+					table.appendChild(tr);
+				}
+			}
+		});
+	</script>
+
+</body>
+</html>

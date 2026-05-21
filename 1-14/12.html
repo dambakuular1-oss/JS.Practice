@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Спойлеры</title>
+  <style>
+    .spoiler:not(.active) {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<p>
+  абзац с текстом
+  <a href="" class="toggle">развернуть спойлер 1</a>
+</p>
+<p class="spoiler">
+  скрытый спойлер 1
+</p>
+
+<p>абзац с текстом</p>
+
+<p>
+  абзац с текстом
+  <a href="" class="toggle">развернуть спойлер 2</a>
+</p>
+<p class="spoiler">
+  скрытый спойлер 2
+</p>
+
+<p>абзац с текстом</p>
+
+<script>
+  const toggles = document.querySelectorAll('.toggle');
+
+  toggles.forEach(function(toggle) {
+    toggle.addEventListener('click', function(event) {
+      event.preventDefault();
+
+      const spoiler = toggle.closest('p').nextElementSibling;
+      spoiler.classList.toggle('active');
+
+      if (spoiler.classList.contains('active')) {
+        toggle.textContent = 'свернуть';
+      } else {
+        toggle.textContent = 'развернуть';
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
